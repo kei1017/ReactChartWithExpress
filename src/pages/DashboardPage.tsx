@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { PieChart } from 'react-minimal-pie-chart';
 import { useNavigate } from 'react-router-dom';
 import tw from 'twin.macro';
 
@@ -6,13 +7,55 @@ import apiClient from '../api-connect/api-connect';
 
 const StyledPage = tw.div`relative w-full min-h-[100vh] max-h-[100vh] flex`;
 
+export interface IFilteredData {
+  id: number;
+  name: string;
+  amount: number;
+  record_time: Date;
+}
+
+export interface IGraphData {
+  [key: string]: number;
+}
+
+export interface IGraphRecord {
+  color: string;
+  title: string;
+  value: number;
+}
+
+const COLORS = ['#E38627', '#C13C37', '#6A2135'];
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [filter1, setFilter1] = useState('');
   const [filter2, setFilter2] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState<IFilteredData[]>([]);
+  const [graphData, setGraphData] = useState<IGraphRecord[]>([]);
 
   const username = localStorage.getItem('username');
+
+  useEffect(() => {
+    const graphDataTmp: IGraphData = {};
+    const graphDataCopy: IGraphRecord[] = [];
+    for (let i = 0; i < filteredData.length; i += 1) {
+      if (graphDataTmp[filteredData[i].name]) {
+        graphDataTmp[filteredData[i].name] += filteredData[i].amount;
+      } else {
+        graphDataTmp[filteredData[i].name] = filteredData[i].amount;
+      }
+    }
+
+    for (let i = 0; i < Object.keys(graphDataTmp).length; i += 1) {
+      const key = Object.keys(graphDataTmp)[i];
+      graphDataCopy.push({
+        color: COLORS[i],
+        title: key,
+        value: graphDataTmp[key],
+      });
+    }
+    setGraphData(graphDataCopy);
+  }, [filteredData]);
 
   function logout() {
     localStorage.removeItem('email');
@@ -84,7 +127,10 @@ const Dashboard = () => {
           </div>
         </div>
         <div tw="overflow-auto">
-          <p>Tabular data:</p>
+          <div tw="p-4 w-full max-w-xs">
+            <PieChart animate data={graphData} />
+          </div>
+          ;<p>Tabular data:</p>
           {filteredData.length > 0 ? (
             <table tw="w-full border-t border-dotted">
               <thead tw="border-b border-dotted">
@@ -96,23 +142,18 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map(
-                  (item: {
-                    id: number;
-                    name: string;
-                    amount: number;
-                    record_time: Date;
-                  }) => (
-                    <tr key={item.id} tw="border-b border-dotted">
-                      <td tw="py-2 text-base text-center">{item.id}</td>
-                      <td tw="py-2 text-base text-center">{item.name}</td>
-                      <td tw="py-2 text-base text-center">{item.amount}</td>
-                      <td tw="py-2 text-base text-center">
-                        {item.record_time}
-                      </td>
-                    </tr>
-                  )
-                )}
+                {filteredData.map((item: IFilteredData) => (
+                  <tr key={item.id} tw="border-b border-dotted">
+                    <td tw="py-2 text-base text-center">{item.id}</td>
+                    <td tw="py-2 text-base text-center">{item.name}</td>
+                    <td tw="py-2 text-base text-center">{item.amount}</td>
+                    <td tw="py-2 text-base text-center">
+                      {new Date(item.record_time).toLocaleDateString()}
+                      &nbsp;
+                      {new Date(item.record_time).toLocaleTimeString()}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           ) : (
