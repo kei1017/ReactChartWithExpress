@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import Layout from './components/Layout';
 import AuthPage from './pages/AuthPage';
-import Dashboard from './pages/DashboardPage';
+import Dashboard from './pages/Dashboard';
 
 const App = () => {
   return (
