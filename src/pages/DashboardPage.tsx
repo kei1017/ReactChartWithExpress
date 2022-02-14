@@ -9,6 +9,7 @@ import ColumnChart from './../components/ColumnChart';
 
 const StyledPage = tw.div`relative w-full min-h-[100vh] max-h-[100vh] flex`;
 const StyleTableCell = tw.td`py-2 text-base text-center`;
+const StyledFooterCell = tw.th`py-2 text-base`;
 
 export interface IFilteredData {
   id: number;
@@ -184,10 +185,10 @@ const Dashboard = () => {
             <table tw="w-full border-t border-dotted">
               <thead tw="border-b border-dotted">
                 <tr>
-                  <th tw="w-2/12 py-2 text-base">ID</th>
+                  <th tw="w-1/12 py-2 text-base">ID</th>
                   <th tw="w-3/12 py-2 text-base">Name</th>
                   <th tw="w-3/12 py-2 text-base">Amount</th>
-                  <th tw="w-4/12 py-2 text-base">Timestamp</th>
+                  <th tw="w-5/12 py-2 text-base">Timestamp</th>
                 </tr>
               </thead>
               <tbody>
@@ -206,10 +207,16 @@ const Dashboard = () => {
               </tbody>
               <thead tw="border-b border-dotted">
                 <tr>
-                  <th tw="py-2 text-base"></th>
-                  <th tw="py-2 text-base"></th>
-                  <th tw="py-2 text-base">{totalAmount}</th>
-                  <th tw="py-2 text-base"></th>
+                  <StyledFooterCell>
+                    {filteredData.length} records
+                  </StyledFooterCell>
+                  <StyledFooterCell>
+                    {pieChartData.length} people
+                  </StyledFooterCell>
+                  <StyledFooterCell>{totalAmount}</StyledFooterCell>
+                  <StyledFooterCell>
+                    {columnChartData.length} days
+                  </StyledFooterCell>
                 </tr>
               </thead>
             </table>

@@ -37,7 +37,8 @@ const AuthPage = (props: any) => {
       if (res.data && res.data.length > 0) {
         localStorage.setItem('email', email);
         localStorage.setItem('username', res.data);
-        toast.success(`Welcome, ${res.data}`);
+        toast.success(`Hi, ${res.data}! Redirecting...`);
+        setUserName(res.data);
         setLocked(true);
         setTimeout(() => {
           navigate('/dashboard');
@@ -77,51 +78,64 @@ const AuthPage = (props: any) => {
 
   return (
     <StyledPage>
-      <div tw="p-4 w-full max-w-sm flex flex-col justify-center items-center gap-4">
-        {props.register ? (
-          <label tw="w-full flex flex-col">
-            <span>Name:</span>
-            <input
-              placeholder="Name"
-              tw="px-4 py-2 w-full outline-none border"
-              type="text"
-              onChange={(e) => setUserName(e.target.value)}
-            />
-          </label>
-        ) : null}
-        <label tw="w-full flex flex-col">
-          <span>Email:</span>
-          <input
-            disabled={locked}
-            placeholder="Email address"
-            tw="px-4 py-2 w-full outline-none border"
-            type="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-        <label tw="w-full flex flex-col">
-          <span>Password:</span>
-          <input
-            disabled={locked}
-            placeholder="Password"
-            tw="px-4 py-2 w-full outline-none border"
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        {locked ? null : (
-          <button
-            disabled={locked}
-            tw="px-4 py-2 w-full outline-none border"
-            onClick={props.register ? register : login}
-          >
-            {props.register ? 'Register' : 'Login'}
-          </button>
-        )}
-        {props.register ? (
-          <a href="/">Go to Login</a>
+      <div tw="p-4 w-full max-w-md flex flex-col justify-center items-center gap-4">
+        {locked ? (
+          <div>
+            <p tw="py-2 text-6xl font-medium">
+              Welcome,{' '}
+              <span tw="text-6xl font-semibold capitalize">{username}</span>
+            </p>
+          </div>
         ) : (
-          <a href="/register">Create an account?</a>
+          <>
+            <h1 tw="py-2 text-4xl font-semibold">
+              {props.register ? 'Register' : 'Login'}
+            </h1>
+            {props.register ? (
+              <label tw="w-full flex flex-col">
+                <span>Name:</span>
+                <input
+                  placeholder="Name"
+                  tw="px-4 py-2 w-full outline-none border"
+                  type="text"
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+              </label>
+            ) : null}
+            <label tw="w-full flex flex-col">
+              <span>Email:</span>
+              <input
+                placeholder="Email address"
+                tw="px-4 py-2 w-full outline-none border"
+                type="email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
+            <label tw="w-full flex flex-col">
+              <span>Password:</span>
+              <input
+                placeholder="Password"
+                tw="px-4 py-2 w-full outline-none border"
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+            <button
+              tw="px-4 py-2 w-full outline-none border"
+              onClick={props.register ? register : login}
+            >
+              {props.register ? 'Register' : 'Login'}
+            </button>
+            {props.register ? (
+              <a href="/" tw="ml-auto italic">
+                Go to Login
+              </a>
+            ) : (
+              <a href="/register" tw="ml-auto italic">
+                Create an account?
+              </a>
+            )}
+          </>
         )}
       </div>
       <ToastContainer />
