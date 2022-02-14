@@ -1,12 +1,10 @@
-import 'react-toastify/dist/ReactToastify.css';
-
 import { useEffect, useState } from 'react';
-import { PieChart } from 'react-minimal-pie-chart';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import tw from 'twin.macro';
 
 import apiClient from '../api-connect/api-connect';
+import PieChart from '../components/PieChart';
 
 const StyledPage = tw.div`relative w-full min-h-[100vh] max-h-[100vh] flex`;
 const StyleTableCell = tw.td`py-2 text-base text-center`;
@@ -23,12 +21,9 @@ export interface IGraphData {
 }
 
 export interface IGraphRecord {
-  color: string;
-  title: string;
+  category: string;
   value: number;
 }
-
-const COLORS = ['#E38627', '#C13C37', '#6A2135'];
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -56,8 +51,7 @@ const Dashboard = () => {
     for (let i = 0; i < Object.keys(graphDataTmp).length; i += 1) {
       const key = Object.keys(graphDataTmp)[i];
       graphDataCopy.push({
-        color: COLORS[i],
-        title: key,
+        category: key,
         value: graphDataTmp[key],
       });
     }
@@ -138,14 +132,10 @@ const Dashboard = () => {
           </div>
         </div>
         <div tw="max-h-[calc(100vh - 65px)] overflow-auto">
-          <div tw="p-4 w-full max-w-xs">
-            <PieChart
-              animate
-              data={graphData}
-              lineWidth={75}
-              segmentsStyle={{ cursor: 'pointer', transition: 'stroke .3s' }}
-              totalValue={totalAmount}
-            />
+          <div tw="p-4 w-full">
+            {graphData?.length > 0 ? (
+              <PieChart chartID="pie-chart" data={graphData} />
+            ) : null}
           </div>
           <p tw="px-4 py-2">Tabular data:</p>
           {filteredData.length > 0 ? (
