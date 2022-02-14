@@ -12,6 +12,7 @@ const App = () => {
       <Routes>
         <Route element={<AuthPage />} path="/" />
         <Route element={<Dashboard />} path="/dashboard" />
+        <Route element={<AuthPage register />} path="/register" />
       </Routes>
     </Layout>
   );
