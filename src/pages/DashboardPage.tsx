@@ -9,6 +9,7 @@ import tw from 'twin.macro';
 import apiClient from '../api-connect/api-connect';
 
 const StyledPage = tw.div`relative w-full min-h-[100vh] max-h-[100vh] flex`;
+const StyleTableCell = tw.td`py-2 text-base text-center`;
 
 export interface IFilteredData {
   id: number;
@@ -160,23 +161,23 @@ const Dashboard = () => {
               <tbody>
                 {filteredData.map((item: IFilteredData) => (
                   <tr key={item.id} tw="border-b border-dotted">
-                    <td tw="py-2 text-base text-center">{item.id}</td>
-                    <td tw="py-2 text-base text-center">{item.name}</td>
-                    <td tw="py-2 text-base text-center">{item.amount}</td>
-                    <td tw="py-2 text-base text-center">
+                    <StyleTableCell>{item.id}</StyleTableCell>
+                    <StyleTableCell>{item.name}</StyleTableCell>
+                    <StyleTableCell>{item.amount}</StyleTableCell>
+                    <StyleTableCell>
                       {new Date(item.record_time).toLocaleDateString()}
                       &nbsp;
                       {new Date(item.record_time).toLocaleTimeString()}
-                    </td>
+                    </StyleTableCell>
                   </tr>
                 ))}
               </tbody>
               <thead tw="border-b border-dotted">
                 <tr>
-                  <th tw="w-2/12 py-2 text-base"></th>
-                  <th tw="w-3/12 py-2 text-base"></th>
-                  <th tw="w-3/12 py-2 text-base">{totalAmount}</th>
-                  <th tw="w-4/12 py-2 text-base"></th>
+                  <th tw="py-2 text-base"></th>
+                  <th tw="py-2 text-base"></th>
+                  <th tw="py-2 text-base">{totalAmount}</th>
+                  <th tw="py-2 text-base"></th>
                 </tr>
               </thead>
             </table>
