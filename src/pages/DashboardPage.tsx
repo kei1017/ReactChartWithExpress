@@ -1,5 +1,8 @@
+import 'react-splitter-layout/lib/index.css';
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SplitterLayout from 'react-splitter-layout';
 import { toast, ToastContainer } from 'react-toastify';
 import tw from 'twin.macro';
 
@@ -7,7 +10,6 @@ import apiClient from '../api-connect/api-connect';
 import PieChart from '../components/PieChart';
 import ColumnChart from './../components/ColumnChart';
 
-const StyledPage = tw.div`relative w-full min-h-[100vh] max-h-[100vh] flex`;
 const StyleTableCell = tw.td`py-2 text-base text-center`;
 const StyledFooterCell = tw.th`py-2 text-base`;
 
@@ -122,9 +124,14 @@ const Dashboard = () => {
   }
 
   return (
-    <StyledPage>
-      <div tw="w-1/4 overflow-auto">
-        <div tw="h-24"></div>
+    <SplitterLayout
+      percentage={false}
+      primaryIndex={1}
+      secondaryInitialSize={250}
+      secondaryMinSize={250}
+    >
+      <div>
+        <div tw="h-16"></div>
         <div tw="p-4 flex flex-col gap-4">
           <select
             defaultValue=""
@@ -157,7 +164,7 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
-      <div tw="w-3/4 border-l">
+      <div>
         <div tw="px-4 py-2 max-h-[65px] capitalize flex justify-end border-b">
           <div>
             Welcome, {username || 'unknown'}
@@ -226,7 +233,7 @@ const Dashboard = () => {
         </div>
       </div>
       <ToastContainer />
-    </StyledPage>
+    </SplitterLayout>
   );
 };
 
