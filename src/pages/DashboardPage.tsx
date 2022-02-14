@@ -117,7 +117,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div tw="w-3/4 border-l">
-        <div tw="px-4 py-2 capitalize flex justify-end border-b">
+        <div tw="px-4 py-2 max-h-[65px] capitalize flex justify-end border-b">
           <div>
             Welcome, {username || 'unknown'}
             <br />
@@ -126,11 +126,11 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
-        <div tw="overflow-auto">
+        <div tw="max-h-[calc(100vh - 65px)] overflow-auto">
           <div tw="p-4 w-full max-w-xs">
             <PieChart animate data={graphData} />
           </div>
-          ;<p>Tabular data:</p>
+          <p tw="px-4 py-2">Tabular data:</p>
           {filteredData.length > 0 ? (
             <table tw="w-full border-t border-dotted">
               <thead tw="border-b border-dotted">
