@@ -1,6 +1,9 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import { useEffect, useState } from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import tw from 'twin.macro';
 
 import apiClient from '../api-connect/api-connect';
@@ -81,7 +84,8 @@ const Dashboard = () => {
       if (res.data) {
         setFilteredData(res.data);
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast(err.toString());
       console.error(err);
     }
   }
@@ -181,6 +185,7 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+      <ToastContainer />
     </StyledPage>
   );
 };

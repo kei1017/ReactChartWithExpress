@@ -1,5 +1,8 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import tw from 'twin.macro';
 
 import apiClient from '../api-connect/api-connect';
@@ -11,6 +14,7 @@ const AuthPage = (props: any) => {
   const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [locked, setLocked] = useState(false);
 
   async function login() {
     // GET
@@ -33,11 +37,17 @@ const AuthPage = (props: any) => {
       if (res.data && res.data.length > 0) {
         localStorage.setItem('email', email);
         localStorage.setItem('username', res.data);
-        navigate('/dashboard');
+        toast(`Welcome, ${res.data}`);
+        setLocked(true);
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
       } else {
+        toast('auth failed!');
         console.error('auth failed!', res);
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast(err.toString());
       console.error(err);
     }
   }
@@ -56,9 +66,11 @@ const AuthPage = (props: any) => {
       if (res.data && res.data.length > 0) {
         navigate('/');
       } else {
+        toast('register failed!');
         console.error('register failed!', res);
       }
-    } catch (err) {
+    } catch (err: any) {
+      toast(err.toString());
       console.error(err);
     }
   }
@@ -80,6 +92,7 @@ const AuthPage = (props: any) => {
         <label tw="w-full flex flex-col">
           <span>Email:</span>
           <input
+            disabled={locked}
             placeholder="Email address"
             tw="px-4 py-2 w-full outline-none border"
             type="email"
@@ -89,24 +102,29 @@ const AuthPage = (props: any) => {
         <label tw="w-full flex flex-col">
           <span>Password:</span>
           <input
+            disabled={locked}
             placeholder="Password"
             tw="px-4 py-2 w-full outline-none border"
             type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <button
-          tw="px-4 py-2 w-full outline-none border"
-          onClick={props.register ? register : login}
-        >
-          {props.register ? 'Register' : 'Login'}
-        </button>
+        {locked ? null : (
+          <button
+            disabled={locked}
+            tw="px-4 py-2 w-full outline-none border"
+            onClick={props.register ? register : login}
+          >
+            {props.register ? 'Register' : 'Login'}
+          </button>
+        )}
         {props.register ? (
           <a href="/">Go to Login</a>
         ) : (
           <a href="/register">Create an account?</a>
         )}
       </div>
+      <ToastContainer />
     </StyledPage>
   );
 };
