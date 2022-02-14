@@ -24,8 +24,8 @@ const AuthPage = (props: any) => {
     //   headers: res.headers,
     //   status: res.status + '-' + res.statusText,
     // };
-    try {
-      const res = await apiClient.post(
+    const res = await apiClient
+      .post(
         '/auth',
         { email, password },
         {
@@ -33,29 +33,27 @@ const AuthPage = (props: any) => {
             'x-access-token': 'token-value',
           },
         }
-      );
-      if (res.data && res.data.length > 0) {
-        localStorage.setItem('email', email);
-        localStorage.setItem('username', res.data);
-        toast.success(`Hi, ${res.data}! Redirecting...`);
-        setUserName(res.data);
-        setLocked(true);
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 2000);
-      } else {
-        toast.error('auth failed!');
-        console.error('auth failed!', res);
-      }
-    } catch (err: any) {
-      toast.error(err.toString());
-      console.error(err);
+      )
+      .catch((err) => {
+        toast.error(err.response?.data?.message || err.toString());
+        console.error(err.response);
+        return;
+      });
+    if (res?.data && res.data.length > 0) {
+      localStorage.setItem('email', email);
+      localStorage.setItem('username', res.data);
+      toast.success(`Hi, ${res.data}! Redirecting...`);
+      setUserName(res.data);
+      setLocked(true);
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
     }
   }
 
   async function register() {
-    try {
-      const res = await apiClient.post(
+    const res = await apiClient
+      .post(
         '/user',
         { email, password, username },
         {
@@ -63,16 +61,16 @@ const AuthPage = (props: any) => {
             'x-access-token': 'token-value',
           },
         }
-      );
-      if (res.data && res.data.length > 0) {
+      )
+      .catch((err) => {
+        toast.error(err.response?.data?.message || err.toString());
+        return;
+      });
+    if (res) {
+      toast.success(`Hi, ${username}! Your account has been registered.`);
+      setTimeout(() => {
         navigate('/');
-      } else {
-        toast.error('register failed!');
-        console.error('register failed!', res);
-      }
-    } catch (err: any) {
-      toast.error(err.toString());
-      console.error(err);
+      }, 2000);
     }
   }
 
