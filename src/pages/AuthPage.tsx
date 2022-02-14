@@ -37,17 +37,17 @@ const AuthPage = (props: any) => {
       if (res.data && res.data.length > 0) {
         localStorage.setItem('email', email);
         localStorage.setItem('username', res.data);
-        toast(`Welcome, ${res.data}`);
+        toast.success(`Welcome, ${res.data}`);
         setLocked(true);
         setTimeout(() => {
           navigate('/dashboard');
         }, 2000);
       } else {
-        toast('auth failed!');
+        toast.error('auth failed!');
         console.error('auth failed!', res);
       }
     } catch (err: any) {
-      toast(err.toString());
+      toast.error(err.toString());
       console.error(err);
     }
   }
@@ -66,11 +66,11 @@ const AuthPage = (props: any) => {
       if (res.data && res.data.length > 0) {
         navigate('/');
       } else {
-        toast('register failed!');
+        toast.error('register failed!');
         console.error('register failed!', res);
       }
     } catch (err: any) {
-      toast(err.toString());
+      toast.error(err.toString());
       console.error(err);
     }
   }

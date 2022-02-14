@@ -85,7 +85,7 @@ const Dashboard = () => {
         setFilteredData(res.data);
       }
     } catch (err: any) {
-      toast(err.toString());
+      toast.error(err.toString());
       console.error(err);
     }
   }
