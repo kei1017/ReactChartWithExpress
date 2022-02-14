@@ -32,13 +32,16 @@ const Dashboard = () => {
   const [filter2, setFilter2] = useState('');
   const [filteredData, setFilteredData] = useState<IFilteredData[]>([]);
   const [graphData, setGraphData] = useState<IGraphRecord[]>([]);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   const username = localStorage.getItem('username');
 
   useEffect(() => {
     const graphDataTmp: IGraphData = {};
     const graphDataCopy: IGraphRecord[] = [];
+    let total = 0;
     for (let i = 0; i < filteredData.length; i += 1) {
+      total += filteredData[i].amount;
       if (graphDataTmp[filteredData[i].name]) {
         graphDataTmp[filteredData[i].name] += filteredData[i].amount;
       } else {
@@ -55,6 +58,7 @@ const Dashboard = () => {
       });
     }
     setGraphData(graphDataCopy);
+    setTotalAmount(total);
   }, [filteredData]);
 
   function logout() {
@@ -95,6 +99,7 @@ const Dashboard = () => {
             <option disabled value="">
               Select user
             </option>
+            <option value="">[All]</option>
             <option value="Alice">Alice</option>
             <option value="Bob">Bob</option>
             <option value="Charlie">Charlie</option>
@@ -107,6 +112,7 @@ const Dashboard = () => {
             <option disabled value="">
               Select range
             </option>
+            <option value="">[All]</option>
             <option value="gte-10000">&gt;= 10,000</option>
             <option value="gte-1000">&gt;= 1,000</option>
             <option value="lt-1000">&lt; 1,000</option>
@@ -128,7 +134,13 @@ const Dashboard = () => {
         </div>
         <div tw="max-h-[calc(100vh - 65px)] overflow-auto">
           <div tw="p-4 w-full max-w-xs">
-            <PieChart animate data={graphData} />
+            <PieChart
+              animate
+              data={graphData}
+              lineWidth={75}
+              segmentsStyle={{ cursor: 'pointer', transition: 'stroke .3s' }}
+              totalValue={totalAmount}
+            />
           </div>
           <p tw="px-4 py-2">Tabular data:</p>
           {filteredData.length > 0 ? (
@@ -155,6 +167,14 @@ const Dashboard = () => {
                   </tr>
                 ))}
               </tbody>
+              <thead tw="border-b border-dotted">
+                <tr>
+                  <th tw="w-2/12 py-2 text-base"></th>
+                  <th tw="w-3/12 py-2 text-base"></th>
+                  <th tw="w-3/12 py-2 text-base">{totalAmount}</th>
+                  <th tw="w-4/12 py-2 text-base"></th>
+                </tr>
+              </thead>
             </table>
           ) : (
             <p tw="py-2 text-center">No data</p>
