@@ -5,6 +5,7 @@ import tw from 'twin.macro';
 
 import apiClient from '../api-connect/api-connect';
 import PieChart from '../components/PieChart';
+import ColumnChart from './../components/ColumnChart';
 
 const StyledPage = tw.div`relative w-full min-h-[100vh] max-h-[100vh] flex`;
 const StyleTableCell = tw.td`py-2 text-base text-center`;
@@ -16,12 +17,21 @@ export interface IFilteredData {
   record_time: Date;
 }
 
-export interface IGraphData {
+export interface IPieChartData {
   [key: string]: number;
 }
 
-export interface IGraphRecord {
+export interface IPieChartRecord {
   category: string;
+  value: number;
+}
+
+export interface IColumnChartData {
+  [key: number]: number;
+}
+
+export interface IColumnChartRecord {
+  date: number;
   value: number;
 }
 
@@ -30,33 +40,58 @@ const Dashboard = () => {
   const [filter1, setFilter1] = useState('');
   const [filter2, setFilter2] = useState('');
   const [filteredData, setFilteredData] = useState<IFilteredData[]>([]);
-  const [graphData, setGraphData] = useState<IGraphRecord[]>([]);
+  const [pieChartData, setChartData] = useState<IPieChartRecord[]>([]);
+  const [columnChartData, setColumnChartData] = useState<IColumnChartRecord[]>(
+    []
+  );
   const [totalAmount, setTotalAmount] = useState(0);
 
   const username = localStorage.getItem('username');
 
   useEffect(() => {
-    const graphDataTmp: IGraphData = {};
-    const graphDataCopy: IGraphRecord[] = [];
+    const pieChartDataTmp: IPieChartData = {};
+    const pieChartDataCopy: IPieChartRecord[] = [];
+    const columnChartDataTmp: IColumnChartData = {};
+    const columnChartDataCopy: IColumnChartRecord[] = [];
     let total = 0;
-    for (let i = 0; i < filteredData.length; i += 1) {
-      total += filteredData[i].amount;
-      if (graphDataTmp[filteredData[i].name]) {
-        graphDataTmp[filteredData[i].name] += filteredData[i].amount;
+
+    for (const item of filteredData) {
+      total += item.amount;
+
+      if (pieChartDataTmp[item.name]) {
+        pieChartDataTmp[item.name] += item.amount;
       } else {
-        graphDataTmp[filteredData[i].name] = filteredData[i].amount;
+        pieChartDataTmp[item.name] = item.amount;
+      }
+
+      const _date = new Date(item.record_time);
+      _date.setHours(0, 0, 0, 0);
+      const columnChartDataKey = _date.getTime();
+      if (columnChartDataTmp[columnChartDataKey]) {
+        columnChartDataTmp[columnChartDataKey] += item.amount;
+      } else {
+        columnChartDataTmp[columnChartDataKey] = item.amount;
       }
     }
 
-    for (let i = 0; i < Object.keys(graphDataTmp).length; i += 1) {
-      const key = Object.keys(graphDataTmp)[i];
-      graphDataCopy.push({
+    for (const key of Object.keys(pieChartDataTmp)) {
+      pieChartDataCopy.push({
         category: key,
-        value: graphDataTmp[key],
+        value: pieChartDataTmp[key],
       });
     }
-    setGraphData(graphDataCopy);
+
+    for (const strKey of Object.keys(columnChartDataTmp)) {
+      const numKey = parseInt(strKey);
+      columnChartDataCopy.push({
+        date: numKey,
+        value: columnChartDataTmp[numKey],
+      });
+    }
+
     setTotalAmount(total);
+    setChartData(pieChartDataCopy);
+    setColumnChartData(columnChartDataCopy);
   }, [filteredData]);
 
   function logout() {
@@ -132,10 +167,17 @@ const Dashboard = () => {
           </div>
         </div>
         <div tw="max-h-[calc(100vh - 65px)] overflow-auto">
-          <div tw="p-4 w-full">
-            {graphData?.length > 0 ? (
-              <PieChart chartID="pie-chart" data={graphData} />
-            ) : null}
+          <div tw="flex">
+            <div tw="p-4 w-6/12">
+              {pieChartData?.length > 0 ? (
+                <PieChart chartID="pie-chart" data={pieChartData} />
+              ) : null}
+            </div>
+            <div tw="p-4 w-6/12">
+              {columnChartData?.length > 0 ? (
+                <ColumnChart chartID="column-chart" data={columnChartData} />
+              ) : null}
+            </div>
           </div>
           <p tw="px-4 py-2">Tabular data:</p>
           {filteredData.length > 0 ? (

@@ -3,7 +3,7 @@ import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import { useLayoutEffect } from 'react';
 
-function Pie(props: { chartID: string; data: any }) {
+function PieChart(props: { chartID: string; data: any }) {
   useLayoutEffect(() => {
     const root = am5.Root.new(props.chartID);
 
@@ -19,6 +19,7 @@ function Pie(props: { chartID: string; data: any }) {
         valueField: 'value',
       })
     );
+    series.labels.template.set('text', '{category}: [bold]{value}[/]');
 
     series.data.setAll(props.data);
 
@@ -31,4 +32,4 @@ function Pie(props: { chartID: string; data: any }) {
 
   return <div id={props.chartID} style={{ height: 300, width: '100%' }}></div>;
 }
-export default Pie;
+export default PieChart;
