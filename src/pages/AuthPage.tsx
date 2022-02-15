@@ -39,11 +39,12 @@ const AuthPage = (props: any) => {
         console.error(err.response);
         return;
       });
-    if (res?.data && res.data.length > 0) {
+    if (res?.data?.accessToken) {
+      localStorage.setItem('token', res.data.accessToken);
       localStorage.setItem('email', email);
-      localStorage.setItem('username', res.data);
-      toast.success(`Hi, ${res.data}! Redirecting...`);
-      setUserName(res.data);
+      localStorage.setItem('username', res.data.user.username);
+      toast.success(`Hi, ${res.data.user.username}! Redirecting...`);
+      setUserName(res.data.user.username);
       setLocked(true);
       setTimeout(() => {
         navigate('/dashboard');

@@ -14,7 +14,6 @@ const TableSection = ({
 }) => {
   return (
     <>
-      {' '}
       <p tw="px-4 py-2">Tabular data:</p>
       {data.length > 0 ? (
         <table tw="w-full border-t border-dotted">
