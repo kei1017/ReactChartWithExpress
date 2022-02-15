@@ -47,7 +47,7 @@ const AuthPage = (props: any) => {
       setUserName(res.data.user.username);
       setLocked(true);
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/');
       }, 2000);
     }
   }

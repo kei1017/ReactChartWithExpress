@@ -81,9 +81,10 @@ const Dashboard = () => {
   }, [filteredData]);
 
   function logout() {
+    localStorage.removeItem('token');
     localStorage.removeItem('email');
     localStorage.removeItem('username');
-    navigate('/');
+    navigate('/auth');
   }
 
   async function getFilteredData() {
@@ -92,9 +93,14 @@ const Dashboard = () => {
         '/filtered-data',
         { filter1, filter2 },
         {
-          headers: {
-            'x-access-token': 'token-value',
-          },
+          headers: localStorage.getItem('token')
+            ? {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                'x-access-token': 'token-value',
+              }
+            : {
+                'x-access-token': 'token-value',
+              },
         }
       );
       if (res.data) {
