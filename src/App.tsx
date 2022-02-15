@@ -2,7 +2,6 @@ import 'twin.macro';
 
 import { Route, Routes } from 'react-router-dom';
 
-import { isLogin } from './common/utils';
 import Layout from './components/Layout';
 import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
@@ -11,7 +10,6 @@ import ProtectedRoute, { ProtectedRouteProps } from './pages/ProtectedRoute';
 const App = () => {
   const defaultProtectedRouteProps: Omit<ProtectedRouteProps, 'outlet'> = {
     authenticationPath: '/auth',
-    isAuthenticated: !!isLogin(),
   };
   return (
     <Layout>
